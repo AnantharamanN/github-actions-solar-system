@@ -57,6 +57,9 @@ jobs:
           continue-on-error: true
           run: npm run code-coverage
 
-        - name: Code-Coverage-Result
-          path: coverage
-          retention-days: 5
+        - name: Archive code coverage results
+          uses: actions/upload-artifact@v4
+          with:
+            name: Code-Coverage-Result
+            path: coverage
+            retention-days: 5
