@@ -58,5 +58,5 @@ jobs:
           run: npm run code-coverage
 
         - name: Code-Coverage-Result
-        - path: coverage
-        - retention-days: 5
+          path: coverage
+          retention-days: 5
