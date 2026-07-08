@@ -7,6 +7,11 @@ on:
       - main
       - 'feature/*'
 
+permissions:
+  contents: read
+  actions: read
+  variables: read
+
 env:
   MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
   MONGO_USERNAME: superuser
@@ -84,6 +89,13 @@ jobs:
           username: ${{ vars.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: GHCR login
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Docker build for testing
         uses: docker/build-push-action@v7
         with:
@@ -103,3 +115,12 @@ jobs:
 
           echo Testing image URL using wget
           wget -q -O - 127.0.0.1:3000/live | grep live
+
+      - name: Container registry push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: | 
+              ${{ vars.DOCKER_USERNAME }}/solar-system:${{ github.sha}}
+              ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha}}
